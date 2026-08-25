@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  Variants,
+  useReducedMotion,
+} from "framer-motion";
+
 import {
   ArrowUpRight,
   Send,
@@ -13,6 +19,10 @@ import {
   ArrowUp,
   CheckCircle2,
 } from "lucide-react";
+
+/* =========================================================
+   DATA
+========================================================= */
 
 const LOCATIONS = [
   {
@@ -29,47 +39,62 @@ const LOCATIONS = [
   },
 ];
 
-// View-In & View-Out Animation Variants
-const scrollRevealVariants = {
+const NAVIGATION = [
+  { label: "Care Pathways", href: "#pathways" },
+  { label: "Specialists", href: "#specialists" },
+  { label: "Insights", href: "#resources" },
+  { label: "FAQ", href: "#faq" },
+];
+
+const CARE_LINKS = [
+  { label: "Executive Burnout", href: "#care" },
+  { label: "Sleep & Recovery", href: "#care" },
+  { label: "Mood & Anxiety", href: "#care" },
+  { label: "Telehealth Visit", href: "#care" },
+];
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+const revealVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 40,
-    scale: 0.96,
-    filter: "blur(4px)",
+    y: 18,
+    filter: "blur(5px)",
   },
+
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
     filter: "blur(0px)",
     transition: {
-      duration: 0.7,
+      duration: 0.65,
       ease: [0.16, 1, 0.3, 1],
     },
   },
 };
 
-const containerVariants = {
-  hidden: { opacity: 0 },
+const staggerVariants: Variants = {
+  hidden: {},
+
   visible: {
-    opacity: 1,
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.1,
+      staggerChildren: 0.06,
+      delayChildren: 0.03,
     },
   },
 };
 
-const itemVariants = {
+const childVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 25,
-    filter: "blur(2px)",
+    y: 12,
   },
+
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
       duration: 0.5,
       ease: [0.16, 1, 0.3, 1],
@@ -77,265 +102,1025 @@ const itemVariants = {
   },
 };
 
+/* =========================================================
+   FOOTER
+========================================================= */
+
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [activeLocation, setActiveLocation] = useState(0);
 
+  const shouldReduceMotion = useReducedMotion();
+
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-    }
+
+    if (!email.trim()) return;
+
+    setSubscribed(true);
+    setEmail("");
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (
-    <footer className="bg-[#FDFBF7] text-[#1A1B1F] pt-16 pb-10 border-t border-[#E2DACD]/60 relative overflow-hidden">
-      
-      {/* Background Soft Glow Drifts (View-In & View-Out Animated) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.4, scale: 1 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-[#C6BDDC]/30 to-[#F2EFF8]/50 rounded-full blur-3xl pointer-events-none"
-      />
+    <footer
+      className="
+        relative
+        overflow-hidden
+        border-t
+        border-[#8F82B5]/25
+        bg-[#6B608F]
+        text-white
+      "
+    >
+      {/* =====================================================
+          BACKGROUND
+      ====================================================== */}
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
-        
-        {/* Newsletter Banner with View-In / View-Out Scroll Animation */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        {/* Main Lavender Glow */}
+
         <motion.div
-          variants={scrollRevealVariants}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  x: ["-50%", "-46%", "-50%"],
+                  y: [0, -15, 0],
+                  opacity: [0.2, 0.3, 0.2],
+                }
+          }
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            left-1/2
+            top-[-180px]
+            h-[380px]
+            w-[600px]
+            -translate-x-1/2
+            rounded-full
+            bg-[#DCD4F2]/30
+            blur-[110px]
+          "
+        />
+
+        {/* Left Glow */}
+
+        <motion.div
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  y: [0, 20, 0],
+                  opacity: [0.1, 0.18, 0.1],
+                }
+          }
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            -left-32
+            top-[35%]
+            h-[240px]
+            w-[240px]
+            rounded-full
+            bg-[#BDB1DD]/20
+            blur-[100px]
+          "
+        />
+
+        {/* Right Glow */}
+
+        <motion.div
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  y: [0, -25, 0],
+                  opacity: [0.08, 0.16, 0.08],
+                }
+          }
+          transition={{
+            duration: 11,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            -right-32
+            bottom-[5%]
+            h-[280px]
+            w-[280px]
+            rounded-full
+            bg-[#D9CBEF]/20
+            blur-[110px]
+          "
+        />
+
+        {/* Grid */}
+
+        <div
+          className="
+            absolute
+            inset-0
+            opacity-[0.035]
+            [background-image:linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,1)_1px,transparent_1px)]
+            [background-size:72px_72px]
+          "
+        />
+      </div>
+
+      {/* =====================================================
+          COMPACT MAIN CONTAINER
+      ====================================================== */}
+
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          w-full
+          max-w-7xl
+          px-5
+          py-7
+          sm:px-6
+          sm:py-8
+          lg:px-8
+          lg:py-9
+        "
+      >
+        {/* =================================================
+            NEWSLETTER
+        ================================================== */}
+
+        <motion.section
+          variants={revealVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }} // once: false triggers view-in and view-out
-          className="rounded-3xl bg-gradient-to-r from-[#F2EFF8]/90 via-white to-[#F2EFF8]/70 border border-[#C6BDDC]/50 p-6 sm:p-9 mb-14 shadow-sm relative overflow-hidden backdrop-blur-xs"
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          className="
+            relative
+            mb-7
+            overflow-hidden
+            rounded-[20px]
+            border
+            border-white/15
+            bg-white/[0.09]
+            px-5
+            py-4
+            backdrop-blur-xl
+            sm:px-6
+            lg:px-7
+          "
         >
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#5A5180] font-bold px-3 py-0.5 rounded-full bg-white border border-[#C6BDDC]/40 shadow-2xs">
-                  <Sparkles className="w-3 h-3 text-[#8C82B5]" /> Clinical Digest
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              right-[-80px]
+              top-[-80px]
+              h-[220px]
+              w-[220px]
+              rounded-full
+              bg-[#D9D0EF]/15
+              blur-[80px]
+            "
+          />
+
+          <div
+            className="
+              relative
+              z-10
+              flex
+              flex-col
+              gap-4
+              lg:flex-row
+              lg:items-center
+              lg:justify-between
+            "
+          >
+            {/* Text */}
+
+            <div className="max-w-xl">
+              <div className="mb-1.5 flex items-center gap-2">
+                <span
+                  className="
+                    inline-flex
+                    items-center
+                    gap-1.5
+                    rounded-full
+                    border
+                    border-white/15
+                    bg-white/10
+                    px-2.5
+                    py-1
+                    text-[8px]
+                    font-bold
+                    uppercase
+                    tracking-[0.18em]
+                    text-[#E5DDF3]
+                  "
+                >
+                  <Sparkles className="h-3 w-3" />
+                  Clinical Insights
                 </span>
-                
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Intake Open
+
+                <span
+                  className="
+                    rounded-full
+                    border
+                    border-emerald-200/20
+                    bg-emerald-300/10
+                    px-2.5
+                    py-1
+                    text-[8px]
+                    font-semibold
+                    text-emerald-100
+                  "
+                >
+                  ● Intake Open
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-serif text-[#1A1B1F] font-bold">
-                Stay updated with evidence-based insights.
-              </h3>
-              <p className="text-xs text-[#2B2D33]/70 max-w-md">
-                Monthly digests on clinical psychiatry, stress architecture, and practice updates.
+              <h2
+                className="
+                  font-serif
+                  text-xl
+                  font-medium
+                  leading-tight
+                  tracking-[-0.035em]
+                  text-white
+                  sm:text-2xl
+                "
+              >
+                Thoughtful insights,{" "}
+                <span className="italic text-[#D9CDED]">
+                  when you&apos;re ready.
+                </span>
+              </h2>
+
+              <p className="mt-1.5 text-[11px] leading-5 text-white/55">
+                Evidence-informed resources for a healthier mind.
               </p>
             </div>
 
-            {/* Newsletter Form */}
-            <div className="w-full md:w-auto shrink-0">
+            {/* Form */}
+
+            <div className="w-full lg:w-[370px]">
               <AnimatePresence mode="wait">
                 {subscribed ? (
                   <motion.div
                     key="success"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center gap-2 text-xs font-semibold text-[#5A5180] bg-white px-5 py-3 rounded-2xl border border-[#C6BDDC]/60 shadow-2xs"
+                    initial={{
+                      opacity: 0,
+                      y: 8,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      rounded-xl
+                      border
+                      border-emerald-200/20
+                      bg-white/10
+                      px-4
+                      py-2.5
+                    "
                   >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Subscribed to updates.</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-200" />
+
+                    <div>
+                      <p className="text-xs font-semibold text-white">
+                        You&apos;re on the list.
+                      </p>
+
+                      <p className="mt-0.5 text-[9px] text-white/45">
+                        Thoughtful updates are on their way.
+                      </p>
+                    </div>
                   </motion.div>
                 ) : (
-                  <form key="form" onSubmit={handleSubscribe} className="flex gap-2 w-full sm:w-auto">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter clinical email..."
-                      required
-                      className="bg-white border border-[#C6BDDC]/60 focus:border-[#5A5180] text-[#1A1B1F] placeholder:text-[#1A1B1F]/40 text-xs rounded-xl px-4 py-2.5 outline-none transition-all w-full sm:w-64 shadow-2xs"
-                    />
-                    <motion.button
-                      whileHover={{ scale: 1.04, backgroundColor: "#484067" }}
-                      whileTap={{ scale: 0.96 }}
-                      type="submit"
-                      className="bg-[#5A5180] text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
+                  <motion.form
+                    key="form"
+                    onSubmit={handleSubscribe}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-1.5"
+                  >
+                    <div
+                      className="
+                        flex
+                        rounded-xl
+                        border
+                        border-white/15
+                        bg-white/[0.08]
+                        p-1
+                      "
                     >
-                      <span>Join</span>
-                      <Send className="w-3 h-3" />
-                    </motion.button>
-                  </form>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Your email address"
+                        required
+                        aria-label="Email address"
+                        className="
+                          min-w-0
+                          flex-1
+                          bg-transparent
+                          px-3
+                          py-2
+                          text-xs
+                          text-white
+                          outline-none
+                          placeholder:text-white/35
+                        "
+                      />
+
+                      <motion.button
+                        type="submit"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        className="
+                          flex
+                          items-center
+                          gap-1.5
+                          rounded-lg
+                          bg-[#E1D8F0]
+                          px-4
+                          py-2
+                          text-[10px]
+                          font-bold
+                          text-[#5A5180]
+                          shadow-lg
+                          transition-colors
+                          hover:bg-white
+                        "
+                      >
+                        Subscribe
+                        <Send className="h-3 w-3" />
+                      </motion.button>
+                    </div>
+
+                    <p className="px-1 text-[8px] text-white/35">
+                      Occasional insights only · Unsubscribe anytime.
+                    </p>
+                  </motion.form>
                 )}
               </AnimatePresence>
             </div>
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Staggered Grid with Scroll View-In & View-Out */}
+        {/* =================================================
+            MAIN FOOTER CONTENT
+        ================================================== */}
+
         <motion.div
-          variants={containerVariants}
+          variants={staggerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }} // triggers every time section enters or leaves viewport
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-[#E2DACD]/60 text-xs"
+          viewport={{
+            once: true,
+            amount: 0.1,
+          }}
+          className="
+            grid
+            grid-cols-1
+            gap-6
+            border-b
+            border-white/10
+            pb-6
+            sm:grid-cols-2
+            lg:grid-cols-12
+            lg:gap-7
+          "
         >
-          {/* Brand Column */}
-          <motion.div variants={itemVariants} className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <motion.div
-                whileHover={{ rotate: 10, scale: 1.08 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="w-8 h-8 rounded-xl bg-[#5A5180] flex items-center justify-center text-white font-serif font-bold text-base shadow-xs cursor-pointer"
+          {/* BRAND */}
+
+          <motion.div
+            variants={childVariants}
+            className="lg:col-span-4"
+          >
+            <motion.a
+              href="#"
+              whileHover={{ y: -2 }}
+              className="group inline-flex items-center gap-3"
+            >
+              <motion.span
+                whileHover={{
+                  rotate: -7,
+                  scale: 1.06,
+                }}
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-white
+                  font-serif
+                  text-sm
+                  font-bold
+                  text-[#655A89]
+                  shadow-lg
+                "
               >
                 S
-              </motion.div>
-              <span className="font-serif text-lg font-bold text-[#1A1B1F]">
-                Selah Health
-              </span>
-            </div>
-            <p className="text-[#2B2D33]/70 leading-relaxed max-w-sm">
-              Restoring cognitive clarity through integrated psychiatric expertise, personalized neuro-biomarker protocols, and compassionate care pathways.
+              </motion.span>
+
+              <div>
+                <span className="block font-serif text-base font-semibold tracking-tight text-white">
+                  Selah Health
+                </span>
+
+                <span className="mt-0.5 block text-[7px] font-bold uppercase tracking-[0.2em] text-[#D5CBE8]/65">
+                  Psychiatry & Care
+                </span>
+              </div>
+            </motion.a>
+
+            <p
+              className="
+                mt-3
+                max-w-sm
+                text-[11px]
+                leading-5
+                text-white/50
+              "
+            >
+              A calmer approach to mental wellness — bringing thoughtful
+              expertise, personalized care, and human connection together.
             </p>
-            <div className="flex items-center gap-3 text-[#5A5180] font-medium pt-1">
+
+            <div className="mt-4 flex flex-wrap gap-2">
               <motion.span
                 whileHover={{ y: -2 }}
-                className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md border border-[#E2DACD]/80 shadow-2xs"
+                className="
+                  inline-flex
+                  items-center
+                  gap-1.5
+                  rounded-lg
+                  border
+                  border-white/10
+                  bg-white/[0.07]
+                  px-2.5
+                  py-1.5
+                  text-[8px]
+                  font-semibold
+                  text-white/65
+                "
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#8C82B5]" /> HIPAA Compliant
+                <ShieldCheck className="h-3 w-3 text-[#D6CCE9]" />
+                HIPAA Compliant
               </motion.span>
+
               <motion.span
                 whileHover={{ y: -2 }}
-                className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md border border-[#E2DACD]/80 shadow-2xs"
+                className="
+                  inline-flex
+                  items-center
+                  gap-1.5
+                  rounded-lg
+                  border
+                  border-white/10
+                  bg-white/[0.07]
+                  px-2.5
+                  py-1.5
+                  text-[8px]
+                  font-semibold
+                  text-white/65
+                "
               >
-                <Lock className="w-3.5 h-3.5 text-[#8C82B5]" /> Encrypted Portal
+                <Lock className="h-3 w-3 text-[#D6CCE9]" />
+                Private & Secure
               </motion.span>
             </div>
           </motion.div>
 
-          {/* Navigation Links */}
-          <motion.div variants={itemVariants} className="space-y-3">
-            <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#8C82B5]">
-              Navigation
-            </h4>
-            <ul className="space-y-2.5 text-[#2B2D33]/80 font-medium">
-              {["Care Pathways", "Specialists", "Insights", "Insurance & Pricing"].map((item) => (
-                <li key={item}>
-                  <motion.a
-                    whileHover={{ x: 3 }}
-                    href={`#${item.toLowerCase().replace(/\s+/g, "")}`}
-                    className="hover:text-[#5A5180] transition-colors inline-flex items-center gap-1 group"
-                  >
-                    <span>{item}</span>
-                    <ArrowUpRight className="w-3 h-3 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all text-[#5A5180]" />
-                  </motion.a>
-                </li>
+          {/* EXPLORE */}
+
+          <motion.div
+            variants={childVariants}
+            className="lg:col-span-2"
+          >
+            <FooterColumn title="Explore">
+              {NAVIGATION.map((item) => (
+                <FooterLink
+                  key={item.label}
+                  href={item.href}
+                  label={item.label}
+                />
               ))}
-            </ul>
+            </FooterColumn>
           </motion.div>
 
-          {/* Clinical Care Links */}
-          <motion.div variants={itemVariants} className="space-y-3">
-            <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#8C82B5]">
-              Clinical Care
-            </h4>
-            <ul className="space-y-2.5 text-[#2B2D33]/80 font-medium">
-              {["Executive Burnout", "Sleep Architecture", "Mood & Anxiety", "Telehealth Visit"].map((item) => (
-                <li key={item}>
-                  <motion.a
-                    whileHover={{ x: 3 }}
-                    href="#specialists"
-                    className="hover:text-[#5A5180] transition-colors inline-block"
-                  >
-                    {item}
-                  </motion.a>
-                </li>
+          {/* CARE */}
+
+          <motion.div
+            variants={childVariants}
+            className="lg:col-span-2"
+          >
+            <FooterColumn title="Care">
+              {CARE_LINKS.map((item) => (
+                <FooterLink
+                  key={item.label}
+                  href={item.href}
+                  label={item.label}
+                />
               ))}
-            </ul>
+            </FooterColumn>
           </motion.div>
 
-          {/* Locations Column */}
-          <motion.div variants={itemVariants} className="space-y-3">
-            <h4 className="text-[10px] uppercase tracking-widest font-bold text-[#8C82B5]">
-              Practice Locations
-            </h4>
+          {/* LOCATION */}
 
-            <div className="flex gap-1 bg-[#F2EFF8] p-1 rounded-lg border border-[#C6BDDC]/30">
-              {LOCATIONS.map((loc, idx) => (
-                <button
-                  key={loc.city}
-                  onClick={() => setActiveLocation(idx)}
-                  className={`flex-1 py-1 text-[10px] font-bold rounded-md transition-all cursor-pointer ${
-                    activeLocation === idx
-                      ? "bg-white text-[#5A5180] shadow-2xs"
-                      : "text-[#2B2D33]/60 hover:text-[#1A1B1F]"
-                  }`}
+          <motion.div
+            variants={childVariants}
+            className="sm:col-span-2 lg:col-span-4"
+          >
+            <div className="space-y-3">
+              <h3
+                className="
+                  text-[8px]
+                  font-bold
+                  uppercase
+                  tracking-[0.2em]
+                  text-[#D6CCE9]
+                "
+              >
+                Practice Locations
+              </h3>
+
+              <div
+                className="
+                  flex
+                  max-w-xs
+                  rounded-lg
+                  border
+                  border-white/10
+                  bg-white/[0.06]
+                  p-1
+                "
+              >
+                {LOCATIONS.map((location, index) => {
+                  const active = activeLocation === index;
+
+                  return (
+                    <button
+                      key={location.city}
+                      type="button"
+                      onClick={() => setActiveLocation(index)}
+                      className="
+                        relative
+                        flex-1
+                        cursor-pointer
+                        rounded-md
+                        py-1.5
+                        text-[9px]
+                        font-semibold
+                      "
+                    >
+                      {active && (
+                        <motion.span
+                          layoutId="footer-location"
+                          className="
+                            absolute
+                            inset-0
+                            rounded-md
+                            bg-white
+                            shadow-sm
+                          "
+                          transition={{
+                            type: "spring",
+                            stiffness: 350,
+                            damping: 30,
+                          }}
+                        />
+                      )}
+
+                      <span
+                        className={`relative z-10 ${
+                          active
+                            ? "text-[#655A89]"
+                            : "text-white/40"
+                        }`}
+                      >
+                        {location.city}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeLocation}
+                  initial={{
+                    opacity: 0,
+                    y: 6,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: -6,
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="space-y-2.5"
                 >
-                  {loc.city}
-                </button>
-              ))}
-            </div>
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="
+                        flex
+                        h-7
+                        w-7
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-white/10
+                      "
+                    >
+                      <MapPin className="h-3 w-3 text-[#D6CCE9]" />
+                    </span>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeLocation}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-1.5 text-[#2B2D33]/80 pt-1"
-              >
-                <div className="flex items-start gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#8C82B5] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-[#1A1B1F]">
-                      {LOCATIONS[activeLocation].address}
-                    </p>
-                    <p>{LOCATIONS[activeLocation].zip}</p>
+                    <div>
+                      <p className="text-[10px] font-semibold text-white/80">
+                        {LOCATIONS[activeLocation].address}
+                      </p>
+
+                      <p className="mt-0.5 text-[9px] text-white/40">
+                        {LOCATIONS[activeLocation].zip}
+                      </p>
+
+                      <p className="mt-1 text-[10px] font-medium text-[#D6CCE9]">
+                        {LOCATIONS[activeLocation].phone}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5 pt-1 text-[#5A5180] font-medium">
-                  <Clock className="w-3.5 h-3.5 text-[#8C82B5]" />
-                  <span>Mon – Fri: 8 AM – 7 PM EST</span>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="
+                        flex
+                        h-7
+                        w-7
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-white/10
+                      "
+                    >
+                      <Clock className="h-3 w-3 text-[#D6CCE9]" />
+                    </span>
+
+                    <span className="text-[9px] text-white/40">
+                      Mon – Fri · 8 AM – 7 PM EST
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </motion.div>
         </motion.div>
 
-        {/* Bottom Bar with Scroll-In Animation */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#2B2D33]/60"
-        >
-          <p>© {new Date().getFullYear()} Selah Health Psychiatry & Care. All rights reserved.</p>
+        {/* =================================================
+            CLOSING STATEMENT
+        ================================================== */}
 
-          <div className="flex items-center gap-6 font-medium">
-            <a href="#" className="hover:text-[#5A5180] transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-[#5A5180] transition-colors">Terms of Service</a>
-            
-            {/* Animated Back to Top Button */}
-            <motion.button
-              whileHover={{ y: -4, scale: 1.08 }}
-              whileTap={{ scale: 0.92 }}
-              onClick={scrollToTop}
-              className="bg-white border border-[#C6BDDC]/60 hover:border-[#5A5180] text-[#5A5180] p-2.5 rounded-full transition-all shadow-xs cursor-pointer flex items-center justify-center"
-              title="Back to Top"
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 12,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 0.6,
+          }}
+          className="
+            border-b
+            border-white/10
+            py-5
+            text-center
+            sm:py-6
+          "
+        >
+          <p
+            className="
+              font-serif
+              text-lg
+              italic
+              tracking-[-0.025em]
+              text-[#E0D7EF]/75
+              sm:text-xl
+            "
+          >
+            Space to breathe. Space to begin again.
+          </p>
+
+          <div
+            className="
+              mx-auto
+              mt-3
+              h-px
+              w-10
+              bg-gradient-to-r
+              from-transparent
+              via-[#D3C7E8]/60
+              to-transparent
+            "
+          />
+        </motion.div>
+
+        {/* =================================================
+            BOTTOM BAR
+        ================================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          whileInView={{
+            opacity: 1,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
+          className="
+            flex
+            flex-col
+            gap-3
+            pt-4
+            text-[9px]
+            text-white/35
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+          "
+        >
+          <p>
+            © {new Date().getFullYear()} Selah Health. All rights reserved.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="#"
+              className="transition-colors hover:text-white/75"
             >
-              <ArrowUp className="w-3.5 h-3.5" />
+              Privacy
+            </a>
+
+            <a
+              href="#"
+              className="transition-colors hover:text-white/75"
+            >
+              Terms
+            </a>
+
+            <a
+              href="#"
+              className="transition-colors hover:text-white/75"
+            >
+              Accessibility
+            </a>
+
+            <div className="flex items-center gap-1.5">
+              <motion.a
+                href="#"
+                aria-label="Instagram"
+                whileHover={{
+                  y: -3,
+                  scale: 1.05,
+                }}
+                whileTap={{
+                  scale: 0.92,
+                }}
+                className="
+                  flex
+                  h-7
+                  w-7
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-white/15
+                  bg-white/10
+                  text-[8px]
+                  font-bold
+                  text-white/65
+                  transition-colors
+                  hover:bg-white
+                  hover:text-[#655A89]
+                "
+              >
+                IG
+              </motion.a>
+
+              <motion.a
+                href="#"
+                aria-label="LinkedIn"
+                whileHover={{
+                  y: -3,
+                  scale: 1.05,
+                }}
+                whileTap={{
+                  scale: 0.92,
+                }}
+                className="
+                  flex
+                  h-7
+                  w-7
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-white/15
+                  bg-white/10
+                  text-[8px]
+                  font-bold
+                  text-white/65
+                  transition-colors
+                  hover:bg-white
+                  hover:text-[#655A89]
+                "
+              >
+                IN
+              </motion.a>
+            </div>
+
+            <motion.button
+              type="button"
+              onClick={scrollToTop}
+              aria-label="Back to top"
+              whileHover={{
+                y: -3,
+                scale: 1.08,
+              }}
+              whileTap={{
+                scale: 0.92,
+              }}
+              className="
+                flex
+                h-8
+                w-8
+                cursor-pointer
+                items-center
+                justify-center
+                rounded-full
+                bg-white
+                text-[#655A89]
+                shadow-lg
+              "
+            >
+              <ArrowUp className="h-3 w-3" />
             </motion.button>
           </div>
         </motion.div>
-
       </div>
     </footer>
+  );
+}
+
+/* =========================================================
+   FOOTER COLUMN
+========================================================= */
+
+function FooterColumn({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-3">
+      <h3
+        className="
+          text-[8px]
+          font-bold
+          uppercase
+          tracking-[0.2em]
+          text-[#D6CCE9]
+        "
+      >
+        {title}
+      </h3>
+
+      <ul className="space-y-2">
+        {children}
+      </ul>
+    </div>
+  );
+}
+
+/* =========================================================
+   FOOTER LINK
+========================================================= */
+
+function FooterLink({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) {
+  return (
+    <li>
+      <motion.a
+        href={href}
+        whileHover={{
+          x: 4,
+        }}
+        className="
+          group
+          inline-flex
+          items-center
+          gap-1.5
+          text-[10px]
+          font-medium
+          text-white/50
+          transition-colors
+          duration-300
+          hover:text-white
+        "
+      >
+        <span className="relative">
+          {label}
+
+          <span
+            className="
+              absolute
+              -bottom-1
+              left-0
+              h-px
+              w-0
+              bg-[#D8CDEC]
+              transition-all
+              duration-300
+              group-hover:w-full
+            "
+          />
+        </span>
+
+        <ArrowUpRight
+          className="
+            h-2.5
+            w-2.5
+            -translate-x-1
+            translate-y-1
+            opacity-0
+            transition-all
+            duration-300
+            group-hover:translate-x-0
+            group-hover:translate-y-0
+            group-hover:opacity-100
+          "
+        />
+      </motion.a>
+    </li>
   );
 }

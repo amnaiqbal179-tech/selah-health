@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
+import SanctuaryGallery from "@/components/sections/SanctuaryGallery";
 import CarePathways from "@/components/sections/CarePathways";
 import ProviderFilter from "@/components/sections/ProviderFilter";
 import BreathingSanctuary from "@/components/sections/BreathingSanctuary";
@@ -23,6 +24,7 @@ export default function Home() {
 
       <Navbar onOpenAssessment={() => setIsQuizOpen(true)} />
       <HeroSection onOpenAssessment={() => setIsQuizOpen(true)} />
+        <SanctuaryGallery onOpenAssessment={() => setIsQuizOpen(true)} />
       <CarePathways onOpenAssessment={() => setIsQuizOpen(true)} />
       <ProviderFilter />
       <BreathingSanctuary />

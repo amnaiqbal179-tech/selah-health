@@ -1,27 +1,13 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Sparkles, ShieldCheck, Activity, Users, Star } from "lucide-react";
+import { ArrowUpRight, Sparkles, ShieldCheck, Users, Star, Activity } from "lucide-react";
 
-const scrollRevealVariants = {
-  hidden: {
-    opacity: 0,
-    y: 30,
-    scale: 0.98,
-    filter: "blur(4px)",
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: {
-      duration: 0.7,
-      ease: [0.16, 1, 0.3, 1],
-    },
-  },
-};
+interface HeroSectionProps {
+  onOpenAssessment?: () => void;
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -46,12 +32,12 @@ const itemVariants = {
     filter: "blur(0px)",
     transition: {
       duration: 0.55,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as const,
     },
   },
 };
 
-export default function HeroSection() {
+export default function HeroSection({ onOpenAssessment }: HeroSectionProps) {
   return (
     <section className="relative pt-24 sm:pt-32 lg:pt-36 pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
       
@@ -66,7 +52,7 @@ export default function HeroSection() {
 
       <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
         
-        {/* Left Editorial Content */}
+        {/* Left Content */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -76,7 +62,7 @@ export default function HeroSection() {
         >
           {/* Status Badge */}
           <motion.div variants={itemVariants} className="inline-block">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#C6BDDC]/60 shadow-2xs backdrop-blur-md">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#C6BDDC]/60 shadow-xs backdrop-blur-md">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8C82B5] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5A5180]"></span>
@@ -87,7 +73,7 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Corrected Professional Headline */}
+          {/* Corrected Professional Dark Headline */}
           <motion.h1
             variants={itemVariants}
             className="text-3xl sm:text-5xl lg:text-6xl font-serif text-[#1A1B1F] leading-[1.12] tracking-tight font-bold"
@@ -115,6 +101,7 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2"
           >
             <motion.button
+              onClick={onOpenAssessment}
               whileHover={{ scale: 1.02, backgroundColor: "#484067" }}
               whileTap={{ scale: 0.98 }}
               className="bg-[#5A5180] text-white px-7 py-3.5 rounded-full font-medium transition-all text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#5A5180]/15 group cursor-pointer"
@@ -126,7 +113,7 @@ export default function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: "#FFFFFF" }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white/90 border border-[#C6BDDC]/80 text-[#1A1B1F] px-6 py-3.5 rounded-full font-medium transition-all text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xs backdrop-blur-md cursor-pointer"
+              className="bg-white/90 border border-[#C6BDDC]/80 text-[#1A1B1F] px-6 py-3.5 rounded-full font-medium transition-all text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs backdrop-blur-md cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-[#8C82B5]" />
               <span>Explore Protocols</span>
@@ -155,20 +142,21 @@ export default function HeroSection() {
 
         {/* Right Sanctuary Image Card */}
         <motion.div
-          variants={scrollRevealVariants}
+          variants={itemVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.2 }}
           className="lg:col-span-5 relative mt-4 lg:mt-0"
         >
           <div className="relative rounded-3xl p-2.5 bg-white/80 border border-[#E2DACD] shadow-xl backdrop-blur-xl">
-            <div className="relative rounded-2xl overflow-hidden group">
-              <motion.img
+            <div className="relative rounded-2xl overflow-hidden group h-[380px] sm:h-[440px] lg:h-[460px]">
+              
+              <Image
                 src="https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop"
                 alt="Clinical Sanctuary Space"
-                whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.7 }}
-                className="w-full h-[380px] sm:h-[440px] lg:h-[460px] object-cover object-center filter brightness-[0.96]"
+                fill
+                priority
+                className="object-cover object-center filter brightness-[0.96] group-hover:scale-105 transition-transform duration-700"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1B1F]/80 via-transparent to-transparent" />
@@ -205,6 +193,7 @@ export default function HeroSection() {
                   <span className="text-xs font-bold text-[#C3D7E3]">100% Confidential</span>
                 </div>
               </div>
+
             </div>
           </div>
         </motion.div>
